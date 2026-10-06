@@ -2,7 +2,7 @@
 function render(){
  const app=$("#app");
  if(!role){
-  app.innerHTML=`<div class="login"><div><h1>Portail</h1><p class="mute">Choose how you want to enter.</p></div>
+  app.innerHTML=`<div class="login"><div><h1>Samtabari Christ Youths Fellowship</h1><p class="mute">Choose how you want to enter.</p></div>
   <button class="role" data-r="admin"><h2>Admin</h2><p class="mute">Publish, edit, pin and delete posts.</p></button>
   <button class="role" data-r="viewer"><h2>Viewer</h2><p class="mute">Read and search posts. No editing.</p></button></div>`;
   app.querySelectorAll(".role").forEach(b=>b.onclick=()=>{role=b.dataset.r==="admin"?"adminlogin":"viewer";render()});
@@ -41,7 +41,7 @@ function render(){
   .sort((a,b)=>(b.pin-a.pin)||b.date.localeCompare(a.date));
  const e=posts.find(p=>p.id===editId);
  app.innerHTML=`
- <div class="top"><div><h1>${admin?"Admin console":"Portail"}</h1><span class="badge ${admin?"admin":""}">${admin?"Admin":"Viewer"}</span></div>
+ <div class="top"><div><h1>${admin?"Admin console":"Samtabari Christ Youths Fellowship"}</h1><span class="badge ${admin?"admin":""}">${admin?"Admin":"Viewer"}</span></div>
  <button class="btn ghost sm" id="out">Switch role</button></div>
  ${admin?`<div class="stats"><div><b>${posts.length}</b><span class="mute">Posts</span></div><div><b>${posts.filter(p=>p.pin).length}</b><span class="mute">Pinned</span></div></div>
  <div class="form"><h2>${e?"Edit post":"New post"}</h2>
