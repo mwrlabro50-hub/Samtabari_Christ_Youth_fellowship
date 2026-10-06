@@ -2,7 +2,7 @@
 function render(){
  const app=$("#app");
  if(!role){
-  app.innerHTML=`<div class="login"><div><h1>Samtabari Christ Youths Fellowship</h1><p class="mute">Choose how you want to enter.</p></div>
+  app.innerHTML=`<div class="login"><div><h1> Samtabari Christ Youths Fellowship </h1><p class="mute">Choose how you want to enter.</p></div>
   <button class="role" data-r="admin"><h2>Admin</h2><p class="mute">Publish, edit, pin and delete posts.</p></button>
   <button class="role" data-r="viewer"><h2>Viewer</h2><p class="mute">Read and search posts. No editing.</p></button></div>`;
   app.querySelectorAll(".role").forEach(b=>b.onclick=()=>{role=b.dataset.r==="admin"?"adminlogin":"viewer";render()});
