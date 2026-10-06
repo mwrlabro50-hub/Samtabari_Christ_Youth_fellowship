@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Portail</title>
+<link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#f4f5f7;--card:#fff;--ink:#1c2430;--mute:#667085;--line:#dfe3e8;--acc:#0f766e;--accfg:#fff;--warn:#b45309;--warnbg:#fef3c7;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#12171e;--card:#1b222c;--ink:#e8ecf1;--mute:#98a2b3;--line:#2c3643;--acc:#2dd4bf;--accfg:#06201d;--warn:#fbbf24;--warnbg:#3a2c0a}}
+:root[data-theme="dark"]{--bg:#12171e;--card:#1b222c;--ink:#e8ecf1;--mute:#98a2b3;--line:#2c3643;--acc:#2dd4bf;--accfg:#06201d;--warn:#fbbf24;--warnbg:#3a2c0a}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.5 "Public Sans",system-ui,sans-serif}
+.wrap{max-width:760px;margin:0 auto;padding:16px}
+h1{font-size:1.6rem;margin:0 0 4px;letter-spacing:-.02em}
+h2{font-size:1.05rem;margin:0 0 6px}
+p{margin:0}.mute{color:var(--mute);font-size:.9rem}
+button,input,select,textarea{font:inherit;color:inherit}
+.btn{background:var(--acc);color:var(--accfg);border:0;border-radius:8px;padding:10px 16px;font-weight:600;cursor:pointer}
+.btn.ghost{background:transparent;color:var(--ink);border:1px solid var(--line)}
+.btn.sm{padding:6px 10px;font-size:.85rem}
+.btn.danger{background:transparent;color:#d92d20;border:1px solid var(--line)}
+:focus-visible{outline:2px solid var(--acc);outline-offset:2px}
+input,select,textarea{width:100%;background:var(--card);border:1px solid var(--line);border-radius:8px;padding:10px}
+textarea{min-height:80px;resize:vertical}
+.login{display:grid;gap:12px;margin-top:40px}
+.role{display:block;width:100%;text-align:left;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:18px;cursor:pointer}
+.role:hover{border-color:var(--acc)}
+.top{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:16px}
+.badge{display:inline-block;font-size:.75rem;font-weight:700;padding:2px 8px;border-radius:99px;background:var(--acc);color:var(--accfg)}
+.badge.admin{background:var(--warnbg);color:var(--warn)}
+.tools{display:flex;gap:8px;margin-bottom:12px}
+.tools select{width:auto}
+.post{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px;margin-bottom:10px}
+.post.pin{border-left:4px solid var(--acc)}
+.meta{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:6px}
+.cat{font-size:.78rem;color:var(--mute)}
+.acts{display:flex;gap:6px;margin-top:10px;flex-wrap:wrap}
+.form{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px;margin-bottom:16px;display:grid;gap:8px}
+.stats{display:flex;gap:16px;margin:0 0 14px}
+.stats b{font-size:1.3rem;display:block}
+.empty{text-align:center;padding:30px;color:var(--mute)}
+.ph{width:100%;max-height:360px;object-fit:cover;border-radius:8px;margin:8px 0;cursor:zoom-in;display:block}
+.pv img{max-width:140px;border-radius:8px;display:block;margin-bottom:6px}
+.lb{position:fixed;inset:0;background:rgba(0,0,0,.88);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;padding:16px;z-index:9}
+.lb img{max-width:100%;max-height:78%;border-radius:8px}.lb p{color:#ddd;font-size:.85rem}
+[hidden]{display:none!important}
+</style>
+</head>
+<body>
+<div class="wrap" id="app"></div>
+<script>
+const KEY="portail_posts_v1";
+const seed=[
+{id:1,title:"Welcome to the portal",body:"Find company news, notices and documents here. Viewers can read everything; admins publish and edit.",cat:"General",pin:true,date:"2026-10-01"},
+{id:2,title:"Office closed Friday",body:"The office is closed this Friday for maintenance. Remote work is expected.",cat:"Notice",pin:false,date:"2026-10-03"},
+{id:3,title:"New expense policy",body:"Expenses above 200 EUR now need manager approval before purchase.",cat:"Policy",pin:false,date:"2026-10-05"}];
+let posts=load(),role=null,q="",cat="All",editId=null,photo=null,delId=null,dr=null;
+function load(){try{const v=localStorage.getItem(KEY);if(v)return JSON.parse(v)}catch(e){}return seed.slice()}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(posts))}catch(e){}}
+const esc=s=>String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const $=s=>document.querySelector(s);
+
+function render(){
+ const app=$("#app");
+ if(!role){
+  app.innerHTML=`<div class="login"><div><h1>Portail</h1><p class="mute">Choose how you want to enter.</p></div>
+  <button class="role" data-r="admin"><h2>Admin</h2><p class="mute">Publish, edit, pin and delete posts.</p></button>
+  <button class="role" data-r="viewer"><h2>Viewer</h2><p class="mute">Read and search posts. No editing.</p></button></div>`;
+  app.querySelectorAll(".role").forEach(b=>b.onclick=()=>{role=b.dataset.r==="admin"?"adminlogin":"viewer";render()});
+  return;
+ }
+ if(role==="adminlogin"){
+  const cr=getCred();
+  app.innerHTML=`<div class="login"><div><h1>${cr?"Admin sign in":"Create admin account"}</h1><p class="mute">${cr?"Enter your admin username and password.":"First time here. Choose the admin username and password (6+ characters)."}</p></div>
+  <div class="form"><input id="u" placeholder="Username" autocomplete="username" aria-label="Username">
+  <input id="pw" type="password" placeholder="Password" autocomplete="${cr?"current-password":"new-password"}" aria-label="Password">
+  ${cr?"":`<input id="pw2" type="password" placeholder="Confirm password" autocomplete="new-password" aria-label="Confirm password">`}
+  <p class="mute" id="err" role="alert" style="color:#d92d20"></p>
+  <div class="acts"><button class="btn" id="go">${cr?"Sign in":"Create account"}</button><button class="btn ghost" id="back">Back</button></div></div></div>`;
+  $("#back").onclick=()=>{role=null;render()};
+  const go=async()=>{
+   const u=$("#u").value.trim(),pw=$("#pw").value,er=$("#err");
+   if(!u||!pw){er.textContent="Enter a username and password.";return}
+   if(cr){
+    if(u.toLowerCase()===cr.u.toLowerCase()&&await hash(pw,cr.s)===cr.h){role="admin";render()}
+    else er.textContent="Wrong username or password.";
+   }else{
+    if(pw.length<6){er.textContent="Use at least 6 characters.";return}
+    if(pw!==$("#pw2").value){er.textContent="Passwords do not match.";return}
+    const sl=Math.random().toString(36).slice(2);
+    try{localStorage.setItem(CK,JSON.stringify({u,s:sl,h:await hash(pw,sl)}))}catch(e){er.textContent="Could not save the account in this browser.";return}
+    role="admin";render();
+   }
+  };
+  $("#go").onclick=go;
+  app.querySelectorAll("input").forEach(i=>i.onkeydown=ev=>{if(ev.key==="Enter")go()});
+  return;
+ }
+ const admin=role==="admin";
+ const cats=["All",...new Set(posts.map(p=>p.cat))];
+ const list=posts.filter(p=>(cat==="All"||p.cat===cat)&&(p.title+p.body).toLowerCase().includes(q.toLowerCase()))
+  .sort((a,b)=>(b.pin-a.pin)||b.date.localeCompare(a.date));
+ const e=posts.find(p=>p.id===editId);
+ app.innerHTML=`
+ <div class="top"><div><h1>${admin?"Admin console":"Portail"}</h1><span class="badge ${admin?"admin":""}">${admin?"Admin":"Viewer"}</span></div>
+ <button class="btn ghost sm" id="out">Switch role</button></div>
+ ${admin?`<div class="stats"><div><b>${posts.length}</b><span class="mute">Posts</span></div><div><b>${posts.filter(p=>p.pin).length}</b><span class="mute">Pinned</span></div></div>
+ <div class="form"><h2>${e?"Edit post":"New post"}</h2>
+  <input id="t" placeholder="Title" value="${esc(dr?dr.t:e?e.title:"")}" aria-label="Title">
+  <textarea id="b" placeholder="Message" aria-label="Message">${esc(dr?dr.b:e?e.body:"")}</textarea>
+  <div class="pv" id="pv">${photo?`<img src="${photo}" alt="Selected photo"><button class="btn danger sm" id="rp">Remove photo</button>`:""}</div>
+  <label class="mute" for="p">Photo: pick a file from this device, take one with the camera, or paste/drop an image copied from a browser tab.</label>
+  <input id="p" type="file" accept=".jpg,.jpeg,.png,.gif,.webp,.bmp,.avif,image/jpeg,image/png,image/webp,image/gif">
+  <input id="pc" type="file" accept="image/*" capture="environment" aria-label="Take photo" style="display:none"><button class="btn ghost sm" type="button" id="cam">Take photo with camera</button>
+  <input id="c" placeholder="Category (e.g. Notice)" value="${esc(dr?dr.c:e?e.cat:"")}" aria-label="Category">
+  <p class="mute" id="fe" role="alert" style="color:#d92d20"></p>
+  <div class="acts"><button class="btn" id="save">${e?"Save changes":"Publish"}</button>${e?`<button class="btn ghost" id="cancel">Cancel</button>`:""}</div></div>`:""}
+ <div class="tools"><input id="q" type="search" placeholder="Search posts" value="${esc(q)}" aria-label="Search posts">
+ <select id="f" aria-label="Category">${cats.map(c=>`<option ${c===cat?"selected":""}>${esc(c)}</option>`).join("")}</select></div>
+ ${list.length?list.map(p=>`<article class="post ${p.pin?"pin":""}"><div class="meta"><span class="cat">${esc(p.cat)}</span><span class="cat">${p.date}</span>${p.pin?'<span class="badge">Pinned</span>':""}</div>
+  <h2>${esc(p.title)}</h2><p>${esc(p.body)}</p>
+  ${p.photo?`<img class="ph" src="${p.photo}" alt="${esc(p.title)}" data-a="zoom" data-id="${p.id}">`:""}
+  <div class="acts">${p.photo?`<button class="btn ghost sm" data-a="share" data-id="${p.id}">Share photo</button>`:""}</div>
+  ${admin?`<div class="acts"><button class="btn ghost sm" data-a="pin" data-id="${p.id}">${p.pin?"Unpin":"Pin"}</button><button class="btn ghost sm" data-a="edit" data-id="${p.id}">Edit</button>${delId===p.id?`<span class="mute">Delete this post?</span><button class="btn danger sm" data-a="yes" data-id="${p.id}">Yes, delete</button><button class="btn ghost sm" data-a="no" data-id="${p.id}">Cancel</button>`:`<button class="btn danger sm" data-a="del" data-id="${p.id}">Delete</button>`}</div>`:""}</article>`).join(""):`<div class="empty">No posts found.${admin?" Publish one above.":""}</div>`}`;
+ $("#out").onclick=()=>{role=null;editId=null;render()};
+ $("#q").oninput=ev=>{q=ev.target.value;render();const i=$("#q");i.focus();i.setSelectionRange(q.length,q.length)};
+ $("#f").onchange=ev=>{cat=ev.target.value;render()};
+ if(admin){
+  $("#p").onchange=ev=>usePhoto(ev.target.files&&ev.target.files[0]);
+  $("#pc").onchange=ev=>usePhoto(ev.target.files&&ev.target.files[0]);
+  $("#cam").onclick=()=>$("#pc").click();
+  const fm=$(".form");fm.ondragover=ev=>ev.preventDefault();
+  fm.ondrop=ev=>{ev.preventDefault();usePhoto([...ev.dataTransfer.files].find(f=>f.type.startsWith("image/")))};
+  const rp=$("#rp");if(rp)rp.onclick=()=>{photo=null;render()};
+  $("#save").onclick=()=>{
+   const t=$("#t").value.trim(),b=$("#b").value.trim(),c=$("#c").value.trim()||"General";
+   if(!t||!b){$("#fe").textContent="Add a title and a message.";return}
+   if(e){Object.assign(e,{title:t,body:b,cat:c,photo})}
+   else posts.push({id:Date.now(),title:t,body:b,cat:c,photo,pin:false,date:new Date().toISOString().slice(0,10)});
+   editId=null;photo=null;dr=null;save();render();
+  };
+  const cn=$("#cancel");if(cn)cn.onclick=()=>{editId=null;photo=null;dr=null;render()};
+  app.querySelectorAll("[data-a=pin],[data-a=edit],[data-a=del],[data-a=yes],[data-a=no]").forEach(b=>b.onclick=()=>{
+   const id=+b.dataset.id,p=posts.find(x=>x.id===id);
+   if(b.dataset.a==="pin")p.pin=!p.pin;
+   else if(b.dataset.a==="edit"){editId=id;photo=p.photo||null;dr=null;render();scrollTo(0,0);return}
+   else if(b.dataset.a==="del"){delId=id;render();return}
+   else if(b.dataset.a==="no"){delId=null;render();return}
+   else if(b.dataset.a==="yes"){posts=posts.filter(x=>x.id!==id);delId=null}
+   save();render();
+  });
+ }
+}
+app_bind();
+const CK="portail_admin_v1";
+function getCred(){try{return JSON.parse(localStorage.getItem(CK))}catch(e){return null}}
+async function hash(p,salt){try{const b=await crypto.subtle.digest("SHA-256",new TextEncoder().encode(salt+p));return[...new Uint8Array(b)].map(x=>x.toString(16).padStart(2,"0")).join("")}catch(e){return salt+p}}
+async function usePhoto(f){const fe=$("#fe");if(!f||!fe)return;
+ fe.textContent="Loading photo...";fe.style.color="";
+ try{const d={t:$("#t").value,b:$("#b").value,c:$("#c").value};photo=await shrink(f);dr=d;render()}
+ catch(x){fe.style.color="#d92d20";fe.textContent="This photo could not be loaded. Try a JPG or PNG."}}
+document.addEventListener("paste",ev=>{if(role!=="admin"||!$("#p"))return;const f=[...(ev.clipboardData?ev.clipboardData.files:[])].find(x=>x.type.startsWith("image/"));if(f)usePhoto(f)});
+function shrink(f){return new Promise((ok,no)=>{const fr=new FileReader();fr.onerror=no;fr.onload=()=>{const im=new Image();im.onerror=no;
+ im.onload=()=>{const k=Math.min(1,900/Math.max(im.width,im.height)),c=document.createElement("canvas");c.width=im.width*k;c.height=im.height*k;
+ c.getContext("2d").drawImage(im,0,0,c.width,c.height);ok(c.toDataURL("image/jpeg",.72))};im.src=fr.result};fr.readAsDataURL(f)})}
+function lightbox(p,msg){const d=document.createElement("div");d.className="lb";d.innerHTML=`<img src="${p.photo}" alt="${esc(p.title)}"><p>${msg}</p><button class="btn">Close</button>`;
+ d.onclick=ev=>{if(ev.target!==d.querySelector("img"))d.remove()};document.body.appendChild(d)}
+async function sharePhoto(p){try{const b=await (await fetch(p.photo)).blob(),f=new File([b],"photo.jpg",{type:"image/jpeg"});
+ if(navigator.canShare&&navigator.canShare({files:[f]})){await navigator.share({files:[f],title:p.title});return}}catch(e){if(e&&e.name==="AbortError")return}
+ lightbox(p,"Sharing is not available here. Press and hold the photo to save it.")}
+function app_bind(){render();document.addEventListener("click",ev=>{const b=ev.target.closest("[data-a=share],[data-a=zoom]");if(!b)return;
+ const p=posts.find(x=>x.id==b.dataset.id);if(!p)return;b.dataset.a==="share"?sharePhoto(p):lightbox(p,"Tap anywhere to close.")})}
+</script>
+</body>
+</html>
