@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#0b57b7"><title>Song Sheet Book</title>
+<style>
+:root{--b:#0b57b7;--bd:#083f86;--bg:#f2f7fd;--tx:#12263f;--mu:#6b7c93;--ln:#dde6f2;--fs:17px}
+*{box-sizing:border-box;margin:0;-webkit-tap-highlight-color:transparent}
+html,body{height:100%}body{font-family:system-ui,-apple-system,"Segoe UI",sans-serif;background:#cfd9e8;color:var(--tx)}
+#app{max-width:480px;height:100%;margin:auto;background:var(--bg);position:relative;overflow:hidden;display:flex;flex-direction:column}
+button,input,textarea,select{font:inherit;color:inherit}button{border:0;background:none;cursor:pointer}
+.bar{background:var(--b);color:#fff;display:flex;align-items:center;gap:8px;padding:calc(10px + env(safe-area-inset-top)) 12px 12px;flex:none}
+.bar h1{flex:1;text-align:center;font-size:18px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ib{color:#fff;font-size:22px;width:38px;height:38px;border-radius:50%}.ib:active{background:#fff3}
+.main{flex:1;overflow-y:auto;padding:14px}
+.nav{display:flex;background:#fff;border-top:1px solid var(--ln);padding-bottom:env(safe-area-inset-bottom);flex:none}
+.nav button{flex:1;padding:8px 0;font-size:11px;color:var(--mu);display:flex;flex-direction:column;align-items:center;gap:2px}
+.nav button span{font-size:20px}.nav .on{color:var(--b);font-weight:600}
+.splash{background:linear-gradient(#7fb8f0,#dff0ff 45%,#8fc274 80%,#5a8f3d);height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:24px;gap:10px}
+.logo{width:110px;height:110px;border-radius:50%;background:var(--b);color:#fff;display:grid;place-items:center;font-size:60px;border:4px solid #fff;box-shadow:0 6px 20px #0b57b755}
+.splash h1{font-size:38px;line-height:1;color:#0a2d63;font-weight:900;letter-spacing:-1px}.splash h1 b{color:var(--b);display:block}
+.splash em{font:italic 22px Georgia,serif;color:#0a2d63}
+.btn{background:var(--b);color:#fff;padding:13px 26px;border-radius:30px;font-weight:700;box-shadow:0 4px 12px #0b57b766}
+.btn.sec{background:#fff;color:var(--b);border:1px solid var(--b);box-shadow:none}.btn.dng{background:#c62828}
+.hero{background:linear-gradient(#cfe6fb,#f2f7fd);border-radius:18px;padding:18px;text-align:center}
+.hero .logo{width:80px;height:80px;font-size:42px;margin:0 auto 8px}
+.hero h2{font-size:24px;font-weight:900;color:#0a2d63}.hero p{color:var(--tx)}
+.verse{text-align:center;margin:16px 0;font-weight:700;color:var(--bd);font-size:18px}.verse small{display:block;font-weight:400;color:var(--tx);font-size:14px}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.tile{border-radius:16px;color:#fff;padding:20px 8px;display:flex;flex-direction:column;align-items:center;gap:4px;font-weight:700;font-size:18px;box-shadow:0 4px 10px #0002}
+.tile span{font-size:34px}.tile small{font-weight:400;font-size:13px}
+.search{display:flex;gap:8px;background:#fff;border:1.5px solid var(--b);border-radius:14px;padding:4px 12px;margin-bottom:10px}
+.search input{flex:1;border:0;outline:0;padding:9px 0;background:none}
+.chips{display:flex;gap:8px;overflow-x:auto;margin-bottom:6px;padding-bottom:4px}
+.chip{padding:7px 16px;border-radius:20px;background:#e3edf9;color:var(--bd);white-space:nowrap;font-size:14px}.chip.on{background:var(--b);color:#fff}
+.row{display:flex;align-items:center;gap:12px;padding:12px 2px;border-bottom:1px solid var(--ln);width:100%;text-align:left}
+.num{width:34px;height:34px;border-radius:50%;background:var(--b);color:#fff;display:grid;place-items:center;font-weight:700;font-size:14px;flex:none}
+.row div{flex:1;min-width:0}.row b{display:block;font-weight:600}.row small{color:var(--mu)}.row i{color:var(--mu);font-style:normal;font-size:20px}
+.note{background:#e3edf9;border-radius:12px;padding:12px;text-align:center;font-size:14px;margin-top:12px}
+.song{background:linear-gradient(#e8f2fd,#fff);flex:1;overflow-y:auto;padding:16px 20px;font-size:var(--fs);line-height:1.5}
+.song h2{text-align:center;font-size:1.25em;color:var(--bd)}.song .sub{text-align:center;color:var(--mu);font-size:.8em;margin-bottom:12px}
+.tag{display:inline-block;background:var(--b);color:#fff;font-size:.72em;font-weight:600;padding:1px 10px;border-radius:8px;margin-top:10px}
+.sec p{white-space:pre-wrap;margin-top:2px}.amen{font:italic 1.5em Georgia,serif;color:var(--b);text-align:right;margin-top:12px}
+label{display:block;font-size:13px;color:var(--mu);margin:12px 0 4px}
+.f{width:100%;background:#fff;border:1px solid var(--ln);border-radius:10px;padding:10px;outline:0}.f:focus{border-color:var(--b)}
+textarea.f{min-height:300px;font-family:ui-monospace,Menlo,monospace;font-size:14px}
+.acts{display:flex;gap:10px;margin-top:16px;flex-wrap:wrap}.acts .btn{flex:1;text-align:center;padding:12px 8px}
+.drawer{position:absolute;inset:0;display:flex;z-index:9}.drawer .sheet{width:78%;background:#fff;padding:calc(30px + env(safe-area-inset-top)) 16px 16px;display:flex;flex-direction:column;gap:4px}.drawer .shade{flex:1;background:#0006}
+.drawer .head{display:flex;gap:12px;align-items:center;margin-bottom:16px}.drawer .logo{width:56px;height:56px;font-size:30px;border-width:2px;flex:none}
+.drawer button.m{text-align:left;padding:13px 12px;border-radius:10px;font-size:16px}.drawer .m.on{background:#e3edf9;color:var(--b);font-weight:600}
+.card{background:#fff;border-radius:14px;padding:16px;line-height:1.5}
+.toast{position:absolute;left:50%;bottom:90px;transform:translateX(-50%);background:#12263f;color:#fff;padding:9px 18px;border-radius:20px;font-size:14px;z-index:20}
+</style></head><body><div id="app"></div>
+<script>
+const DEF={name:"Our Church (Samtabari)",edition:"Edition 2026",verse:"Righteousness exalts a nation.",ref:"Proverbs 14:34",fs:17,
+about:"Welcome to our church song book. Use Edit to add, change or remove songs.",
+songs:[
+{t:"Thangwn Na Ang Akhai Gwja",c:"General",l:"Chorus:\nTangwnna ang akhai gwja\nBasiagrani katiao?\nJisu Iswr nangai\nAngni jwng phwrang ao.\n\nVerse 1:\nAngni jisu, angni jisu\nJwngni hwna gwja,\nAngni jibon, angni pran\nTao Iswrnao.\n\nChorus:\nTangwnna ang akhai gwja\nBasiagrani katiao?\nJisu Iswr nangai\nAngni jwng phwrang ao.\n\nBridge:\nNangnao jisu, nangnao jisu\nAngni jibon ni\nAmen."},
+{t:"Jesus Loves Me",c:"General",l:""},{t:"My Prayer",c:"General",l:""},
+{t:"Afa jwng baknaiw, da kwmsia tangbai",c:"General",l:""},{t:"Afa, Iswr kaolaiw jwngw",c:"General",l:""},
+{t:"Hallelujah",c:"Praise & Worship",l:""},{t:"Jisu Ni Chwng",c:"Christian Life",l:""},{t:"O Lord, Hear My Prayer",c:"General",l:""}]};
+let D;try{D=JSON.parse(localStorage.getItem("ssb"))}catch(e){}
+if(!D||!D.songs)D=JSON.parse(JSON.stringify(DEF));
+const save=()=>{try{localStorage.setItem("ssb",JSON.stringify(D))}catch(e){}};
+const esc=s=>String(s??"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const hs=s=>{let a=5381,b=52711;for(const c of s){a=Math.imul(a,33)^c.charCodeAt(0);b=(Math.imul(b,31)+c.charCodeAt(0))>>>0}return (a>>>0).toString(36)+b.toString(36)};
+const AU="br97rc1etlrlm",AP="afap1nz4scr9";
+const A=document.getElementById("app");
+let S={auth:false,v:"splash",cat:"All",q:"",i:0,drawer:false,back:"home"};
+const go=(v,x={})=>{if(v==="song"||v==="edit")x.back=x.back||(S.v==="edit"?S.back:S.v);Object.assign(S,x,{v,drawer:false});draw()};
+const toast=m=>{const d=document.createElement("div");d.className="toast";d.textContent=m;A.append(d);setTimeout(()=>d.remove(),1800)};
+const cats=()=>["All",...new Set(D.songs.map(s=>s.c).filter(Boolean))];
+const parse=t=>{const o=[];let c=null;for(const ln of (t||"").split("\n")){const m=ln.match(/^\s*([^:]{1,30}):\s*$/);if(m){c={h:m[1],l:[]};o.push(c)}else{if(!c){c={h:"",l:[]};o.push(c)}c.l.push(ln)}}return o.map(s=>({h:s.h,t:s.l.join("\n").trim()})).filter(s=>s.t||s.h)};
+const bar=(t,l,r)=>`<div class="bar">${l||'<span style="width:38px"></span>'}<h1>${t}</h1>${r||'<span style="width:38px"></span>'}</div>`;
+const menu='<button class="ib" data-a="drawer">☰</button>',back='<button class="ib" data-a="back">←</button>';
+const nav=()=>`<div class="nav">${[["home","🏠","Home"],["list","🎵","Song List"],["about","📖","About"],["settings","⚙️","Settings"],["admin","🔒","Admin"]].map(([k,i,t])=>`<button data-a="go" data-v="${k}" class="${S.v===k||(k==="list"&&S.v==="search")?"on":""}"><span>${i}</span>${t}</button>`).join("")}</div>`;
+const rows=a=>a.map(({s,n})=>`<button class="row" data-a="open" data-i="${n}"><span class="num">${n+1}</span><div><b>${esc(s.t)}</b><small>${esc(s.c)}</small></div><i>›</i></button>`).join("")||'<p class="note">No songs found.</p>';
+const withN=()=>D.songs.map((s,n)=>({s,n}));
+function draw(){let h="";const v=S.v;
+if(v==="splash")h=`<div class="splash"><div class="logo">✝</div><h1>SONG SHEET<b>BOOK</b></h1><em>“Sing to the Lord a new song.”</em><div>Psalm 96:1</div><div style="margin:14px">${esc(D.name)}</div><button class="btn" data-a="go" data-v="home">📖 OPEN SONG BOOK 📖</button><div>${esc(D.edition)}</div></div>`;
+else if(v==="home")h=bar("Song Sheet Book",menu,'<button class="ib" data-a="go" data-v="search">🔍</button>')+`<div class="main"><div class="hero"><div class="logo">✝</div><h2>SONG SHEET BOOK</h2><p>${esc(D.name)}</p></div><div class="verse">“${esc(D.verse)}”<small>${esc(D.ref)}</small></div><div class="grid">${[["list","🎵","Song List","View all songs","#1e88e5"],["search","🔍","Search","Find your song","#2eb84a"],["about","📖","About Us","Our Church","#7b3fc4"],["settings","⚙️","Settings","App Info","#f39c12"]].map(([k,i,t,s,c])=>`<button class="tile" data-a="go" data-v="${k}" style="background:${c}"><span>${i}</span>${t}<small>${s}</small></button>`).join("")}</div></div>`;
+else if(v==="list"){const a=withN().filter(x=>S.cat==="All"||x.s.c===S.cat);h=bar("Song List",menu)+`<div class="main"><div class="search">🔍<input id="q" placeholder="Search song..." data-a="gosearch"></div><div class="chips">${cats().map(c=>`<button class="chip ${c===S.cat?"on":""}" data-a="cat" data-c="${esc(c)}">${esc(c)}</button>`).join("")}</div>${rows(a)}</div>`+nav()}
+else if(v==="search"){const q=S.q.toLowerCase();const a=q?withN().filter(x=>(x.s.t+" "+x.s.l+" "+x.s.c).toLowerCase().includes(q)):[];h=bar("Search Songs",back)+`<div class="main"><div class="search">🔍<input id="q" value="${esc(S.q)}" placeholder="Search title or lyrics" autofocus></div><div id="res">${rows(a)}${q?`<div class="note">Found ${a.length} result${a.length==1?"":"s"} for “${esc(S.q)}”</div>`:""}</div></div>`+nav()}
+else if(v==="song"){const s=D.songs[S.i];if(!s)return go("list");h=bar(esc(s.t),back)+`<div class="song"><h2>${esc(s.t)}</h2><div class="sub">(Song – ${S.i+1})</div>${s.l.trim()?parse(s.l).map(x=>`<div class="sec">${x.h?`<span class="tag">${esc(x.h)}</span>`:""}<p>${esc(x.t)}</p></div>`).join(""):'<p class="note">No lyrics yet. Ask an admin to add them.</p>'}<div class="amen">Amen.</div></div><div class="nav"><button data-a="prev"><span>‹</span>Back</button><button data-a="go" data-v="home"><span>🏠</span>Home</button><button data-a="next"><span>›</span>Next</button></div>`}
+else if(v==="edit"){if(!S.auth)return go("admin");const n=S.i<0,s=n?{t:"",c:"General",l:""}:D.songs[S.i];h=bar(n?"Add Song":"Edit Song",back)+`<div class="main"><label>Song title</label><input class="f" id="et" value="${esc(s.t)}"><label>Category</label><input class="f" id="ec" list="cl" value="${esc(s.c)}"><datalist id="cl">${cats().filter(c=>c!=="All").map(c=>`<option>${esc(c)}`).join("")}</datalist><label>Lyrics — put a line like “Chorus:” or “Verse 1:” before each part</label><textarea class="f" id="el">${esc(s.l)}</textarea><div class="acts"><button class="btn" data-a="savesong">Save song</button>${n?"":'<button class="btn dng" data-a="del">Delete</button>'}${n?"":'<button class="btn sec" data-a="up">↑ Move up</button><button class="btn sec" data-a="down">↓ Move down</button>'}</div></div>`}
+else if(v==="about")h=bar("About Us",menu)+`<div class="main"><div class="hero"><div class="logo">✝</div><h2>${esc(D.name)}</h2></div><div class="card" style="margin-top:14px;white-space:pre-wrap">${esc(D.about)}</div></div>`+nav();
+else if(v==="settings")h=bar("Settings",menu)+`<div class="main"><label>Lyrics text size: <b id="fv">${D.fs}</b>px</label><input type="range" id="sf" min="13" max="30" value="${D.fs}" style="width:100%"><div class="acts"><button class="btn" data-a="savesett">Save settings</button></div><div class="card" style="margin-top:20px"><b>${esc(D.name)}</b><br>${esc(D.edition)}<br>${D.songs.length} songs</div></div>`+nav();
+else if(v==="admin"){if(!S.auth)h=bar("Admin Login",menu)+`<div class="main"><div class="card">Only church admins can add, edit or delete songs.</div><label>User name</label><input class="f" id="lu" autocapitalize="off" autocomplete="username"><label>Password</label><input class="f" id="lp" type="password" autocomplete="current-password"><div class="acts"><button class="btn" data-a="login">Log in</button></div></div>`+nav();
+else h=bar("Admin",menu,'<button class="ib" data-a="logout" title="Log out">⎋</button>')+`<div class="main"><div class="acts" style="margin-top:0"><button class="btn" data-a="new">＋ Add new song</button></div><label>All songs</label>${D.songs.map((x,n)=>`<div class="row"><span class="num">${n+1}</span><div><b>${esc(x.t)}</b><small>${esc(x.c)}</small></div><button class="chip" data-a="edit" data-i="${n}">Edit</button><button class="chip" style="color:#c62828" data-a="del" data-i="${n}">Delete</button></div>`).join("")}<label style="margin-top:22px">Church info</label><input class="f" id="sn" value="${esc(D.name)}" placeholder="Church name"><input class="f" id="se" value="${esc(D.edition)}" placeholder="Edition" style="margin-top:8px"><input class="f" id="sv" value="${esc(D.verse)}" placeholder="Home verse" style="margin-top:8px"><input class="f" id="sr" value="${esc(D.ref)}" placeholder="Verse reference" style="margin-top:8px"><textarea class="f" id="sa" style="min-height:90px;font-family:inherit;margin-top:8px" placeholder="About text">${esc(D.about)}</textarea><div class="acts"><button class="btn" data-a="saveinfo">Save church info</button></div><div class="acts"><button class="btn sec" data-a="export">Export songs</button><label class="btn sec" style="margin:0">Import<input type="file" id="imp" accept=".json" hidden></label></div><div class="acts"><button class="btn dng" data-a="reset">Reset to default</button><button class="btn sec" data-a="logout">Log out</button></div></div>`+nav()}
+if(S.drawer)h+=`<div class="drawer"><div class="sheet"><div class="head"><div class="logo">✝</div><div><b>Song Sheet Book</b><br><small>${esc(D.name)}</small></div></div>${[["home","🏠","Home"],["list","🎵","Song List"],["search","🔍","Search"],["about","📖","About Us"],["settings","⚙️","Settings"],["admin","🔒","Admin"]].map(([k,i,t])=>`<button class="m ${S.v===k?"on":""}" data-a="go" data-v="${k}">${i}  ${t}</button>`).join("")}<p style="margin-top:auto;color:var(--mu);font-size:13px">“Sing to the Lord a new song.” Psalm 96:1<br>${esc(D.edition)}</p></div><div class="shade" data-a="drawer"></div></div>`;
+A.innerHTML=h;document.documentElement.style.setProperty("--fs",D.fs+"px");
+const q=document.getElementById("q");if(q&&v==="search"){q.focus();q.setSelectionRange(99,99)}
+const im=document.getElementById("imp");if(im)im.onchange=e=>{const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=()=>{try{const x=JSON.parse(r.result);if(!x.songs)throw 0;D=x;save();toast("Imported");go("list")}catch(_){toast("Invalid file")}};r.readAsText(f)};
+const sf=document.getElementById("sf");if(sf)sf.oninput=()=>{document.getElementById("fv").textContent=sf.value;document.documentElement.style.setProperty("--fs",sf.value+"px")};}
+const g=id=>document.getElementById(id).value;
+A.addEventListener("input",e=>{if(e.target.id==="q"){if(S.v==="list"){S.q=e.target.value;go("search")}else{S.q=e.target.value;const q=S.q.toLowerCase(),a=q?withN().filter(x=>(x.s.t+" "+x.s.l+" "+x.s.c).toLowerCase().includes(q)):[];document.getElementById("res").innerHTML=rows(a)+(q?`<div class="note">Found ${a.length} result${a.length==1?"":"s"} for “${esc(S.q)}”</div>`:"")}}});
+A.addEventListener("click",e=>{const t=e.target.closest("[data-a]");if(!t||t.tagName==="INPUT")return;const a=t.dataset.a,d=t.dataset,n=D.songs.length;
+if(a==="go"){if(d.v==="search")S.q="";go(d.v)}
+else if(a==="drawer"){S.drawer=!S.drawer;draw()}
+else if(a==="back")go(S.v==="search"?"home":S.back||"home");
+else if(a==="cat"){S.cat=d.c;draw()}
+else if(a==="open")go("song",{i:+d.i});
+else if(a==="prev"){S.i=(S.i-1+n)%n;draw()}else if(a==="next"){S.i=(S.i+1)%n;draw()}
+else if(a==="new")go("edit",{i:-1,back:"admin"});else if(a==="edit")go("edit",{i:+d.i,back:"admin"});
+else if(a==="login"){if(hs(g("lu").trim())===AU&&hs(g("lp"))===AP){S.auth=true;toast("Welcome, admin");draw()}else toast("Wrong user name or password")}
+else if(a==="logout"){S.auth=false;go("home")}
+else if(a==="savesong"){const s={t:g("et").trim(),c:g("ec").trim()||"General",l:g("el")};if(!s.t)return toast("Enter a title");if(S.i<0){D.songs.push(s);S.i=n}else D.songs[S.i]=s;save();toast("Saved");go("admin")}
+else if(a==="del"){if(!S.auth)return;if(confirm("Delete this song?")){D.songs.splice(d.i!==undefined?+d.i:S.i,1);save();go("admin")}}
+else if(a==="up"||a==="down"){const j=S.i+(a==="up"?-1:1);if(j<0||j>=n)return;[D.songs[S.i],D.songs[j]]=[D.songs[j],D.songs[S.i]];S.i=j;save();toast("Moved to #"+(j+1))}
+else if(a==="savesett"){D.fs=+g("sf");save();toast("Settings saved")}
+else if(a==="saveinfo"){Object.assign(D,{name:g("sn"),edition:g("se"),verse:g("sv"),ref:g("sr"),about:g("sa")});save();toast("Saved")}
+else if(a==="export"){const b=new Blob([JSON.stringify(D,null,2)],{type:"application/json"}),l=document.createElement("a");l.href=URL.createObjectURL(b);l.download="songs.json";l.click()}
+else if(a==="reset"){if(S.auth&&confirm("Erase all changes and restore the default songs?")){D=JSON.parse(JSON.stringify(DEF));save();go("home")}}});
+draw();
+</script></body></html>
